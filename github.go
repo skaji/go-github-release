@@ -38,7 +38,11 @@ func (r *Release) GetLatestTag() (string, error) {
 }
 
 func (r *Release) GetLatestAssets() ([]string, error) {
-	url := fmt.Sprintf("https://github.com/%s/%s/releases/latest", r.Owner, r.Repository)
+	latestTag, err := r.GetLatestTag()
+	if err != nil {
+		return nil, err
+	}
+	url := fmt.Sprintf("https://github.com/%s/%s/releases/expanded_assets/%s", r.Owner, r.Repository, latestTag)
 	res, err := r.httpClient(true).Get(url)
 	if err != nil {
 		return nil, err
